@@ -9,7 +9,7 @@ const msg = getNotes();
 
 console.log(msg);
 
-console.log(chalk.green.bold.inverse('Success'))
+console.log(chalk.blue.bold.inverse('Success'))
 
 console.log(validator.isEmail('andrew@exemple.com'));
 console.log(validator.isURL('https://mead.io'));
