@@ -42,21 +42,12 @@ yargs.command({
     }
 })
 
-// Create list command
+// Display list of all title notes
 yargs.command({
-    command: 'list',
-    describe: 'List your notes',
-    handler() {
-        console.log('Listing out all notes')
-    }
-})
-
-// Create read command
-yargs.command({
-    command: 'read',
-    describe: 'Read a note',
-    handler() {
-        console.log('Reading a note')
+    command: 'export',
+    describe: 'Display list of all title notes',
+    handler(argv) {
+        notes.listNotes()
     }
 })
 

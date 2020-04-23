@@ -44,6 +44,13 @@ const removeNote = (title) =>
 
 }
 
+const listNotes = () => {
+    const notes = loadNotes()
+
+    console.log("List of all titles : ")
+    notes.forEach((note) => console.log(note.title))
+}
+
 // Charge le contenu JSON et l'intéprête
 const loadNotes = () =>
 {
@@ -72,5 +79,6 @@ module.exports =
 {
     getNotes: getNotes,
     addNote: addNote,
-    removeNote: removeNote
+    removeNote: removeNote,
+    listNotes: listNotes,
 }
