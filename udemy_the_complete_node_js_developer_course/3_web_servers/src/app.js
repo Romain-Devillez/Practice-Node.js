@@ -26,17 +26,17 @@ app.get('', (req, res) => {
     })
 
 app.get('/about', (req, res) => {
-    res.render('About page', {
+    res.render('about', {
         title: 'About page',
         name: 'Romain'
     })
 })
 
 app.get('/weather', (req, res) => {
-    res.send({
+    res.render({
         title: 'Weather page',
-        forecast: '',
-        location: '',
+        forecast: 'Test',
+        location: 'Test',
         name: 'Romain'
     })
 })
@@ -44,7 +44,25 @@ app.get('/weather', (req, res) => {
 app.get('/help', (req, res) => {
     res.render('help', {
         title: 'Help page',
-        name: 'Romain'
+        name: 'Romain',
+        helper: 'This is an helper text'
+    })
+})
+
+app.get('/help/*', (req, res) => {
+    res.render('404', {
+        title: '404',
+        name: 'Romain',
+        errorMessage: 'Help Article Not Found'
+    })
+})
+
+app.get('*', (req, res) => {
+    res.render('404', {
+        title: '404',
+        name: 'Romain',
+        errorMessage: 'Page Not Found'
+
     })
 })
 
