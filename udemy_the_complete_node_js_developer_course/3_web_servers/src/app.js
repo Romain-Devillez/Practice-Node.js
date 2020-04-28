@@ -13,6 +13,7 @@ const partialsPath = path.join(__dirname, '../templates/partials')
 app.set('view engine', 'hbs')
 // Set express for custome view directory
 app.set('views', viewPath)
+// Set partials path for hbs use
 hbs.registerPartials(partialsPath)
 
 // Setup static directory to serve
@@ -20,7 +21,7 @@ app.use(express.static(publicDirectoryPath))
 
 app.get('', (req, res) => {
         res.render('index', {
-            title: 'Home page',
+            title: 'Weather',
             name: 'Romain'
         })
     })
