@@ -21,7 +21,7 @@ app.use(express.static(publicDirectoryPath))
 
 app.get('', (req, res) => {
         res.render('index', {
-            title: 'Weather',
+            title: 'Home',
             name: 'Romain'
         })
     })
@@ -34,11 +34,30 @@ app.get('/about', (req, res) => {
 })
 
 app.get('/weather', (req, res) => {
-    res.render({
+
+    if(!req.query.address) {
+        return res.send({
+            error: 'You must provide an address'
+        })
+    }
+
+    res.send({
         title: 'Weather page',
         forecast: 'Test',
-        location: 'Test',
+        location: req.query.address,
         name: 'Romain'
+    })
+})
+
+app.get('/products', (req, res) => {
+    if(!req.query.search) {
+       return res.send({
+            error: 'You must provide a search term'
+        })
+    }
+
+    res.send({
+        products: []
     })
 })
 
