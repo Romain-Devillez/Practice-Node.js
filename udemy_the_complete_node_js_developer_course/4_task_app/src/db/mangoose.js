@@ -31,12 +31,25 @@ const User = mongoose.model('User', {
                 throw new Error('Age must be a positive number')
             }
         }
+    },
+    password: {
+        type: String,
+        required: true,
+        tim: true,
+        minlength: 7,
+        validate(value) {
+            if(value.toLocaleLowerCase().includes('password')) {
+                throw new Error('Password cannot contain "password" ')
+            }
+        }
     }
+
 })
 
 const me = new User({
     name: " Julien",
-    email: 'ju.DEV@live.fr'
+    email: 'ju.DEV@live.fr',
+    password: 'bonjourbonjour '
 })
 
 me.save().then( () => {
@@ -44,3 +57,29 @@ me.save().then( () => {
 }).catch( (error) => {
     console.log('error', error)
 })
+
+const Task = mongoose.model('Task', {
+    description: {
+        type: String,
+        trim: true,
+        required: true,
+
+    },
+    completed: {
+        type: Boolean,
+        default: false
+    }
+})
+
+const task = new Task( {
+    description: 'Learn the Mongoose library'
+})
+
+task.save().then( () => {
+    console.log(me)
+}).catch( (error) => {
+    console.log('error', error)
+})
+
+
+
