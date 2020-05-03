@@ -45,8 +45,31 @@ app.post('/users', (req, res) => {
     })
 })
 
+// Get route for show All Tasks
+app.get('/tasks', (req, res) => {
+    Task.find({}).then( (tasks) => {
+        res.status(200).send(tasks)
+    }).catch( () => {
+        res.status(500).send()
+    })
+})
+
+// Get route for show One Task with id params
+app.get('/tasks/:id', (req, res) => {
+    const _id = req.params.id
+
+    Task.findById(_id).then( (task) => {
+        if (!task) {
+            return res.status(400).send()
+        }
+        res.send(task)
+    }).catch( () => {
+        res.status(500).send()
+    })
+})
+
 // Post route for Insert Task
-app.post('/task', (req, res) => {
+app.post('/tasks', (req, res) => {
     const task = new Task(req.body)
 
     task.save().then( () => {
