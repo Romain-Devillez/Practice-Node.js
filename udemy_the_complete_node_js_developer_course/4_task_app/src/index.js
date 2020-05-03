@@ -71,6 +71,20 @@ app.patch('/users/:id', async (req, res) => {
     }
 })
 
+// DELETE route for delete One User
+app.delete('/users/:id', async (req, res) => {
+    try {
+        const user = await User.findByIdAndDelete(req.params.id)
+
+        if(!user) {
+            return res.status(404).send()
+        }
+        res.send(user)
+    } catch (e) {
+        res.status(500).send()
+    }
+})
+
 // GET route for show All Tasks
 app.get('/tasks', async (req, res) => {
 
@@ -132,6 +146,19 @@ app.patch('/tasks/:id', async (req, res) => {
     }
 })
 
+// DELETE route for delete One Task
+app.delete('/tasks/:id', async (req, res) => {
+    try {
+        const task = await Task.findByIdAndDelete(req.params.id)
+
+        if(!task) {
+            return res.status(404).send()
+        }
+        res.send(task)
+    } catch (e) {
+        res.status(500).send()
+    }
+})
 
 app.listen(port, () => {
     console.log('Server is up on port : ' + port)
