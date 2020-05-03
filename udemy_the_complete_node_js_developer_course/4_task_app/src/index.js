@@ -11,7 +11,7 @@ const port = process.env.PORT || 3000
 // Parse JSON
 app.use(express.json())
 
-// Get route for show All Users
+// GET route for show All Users
 app.get('/users', async (req, res) => {
     try {
         const users = await User.find({})
@@ -21,7 +21,7 @@ app.get('/users', async (req, res) => {
     }
 })
 
-// Get route for show One User with Id params
+// GET route for show One User with Id params
 app.get('/users/:id', async (req, res) => {
     const _id = req.params.id
     try {
@@ -35,7 +35,7 @@ app.get('/users/:id', async (req, res) => {
     }
 })
 
-// Post route for create One User
+// POST route for create One User
 app.post('/users', async (req, res) => {
     const user = new User(req.body)
 
@@ -47,7 +47,31 @@ app.post('/users', async (req, res) => {
     }
 })
 
-// Get route for show All Tasks
+// PATCH route for updating One User
+app.patch('/users/:id', async (req, res) => {
+    const updates = Object.keys(req.body)
+    const allowedUpdates = ['name', 'email', 'password', 'age']
+
+    const isValidOperation = updates.every( (update) => allowedUpdates.includes(update))
+    if(!isValidOperation) {
+        return res.status(400).send({ error: 'Invalid updates !'})
+    }
+
+    try {
+        const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true})
+
+        if (!user) {
+            return res.status(404).send()
+        }
+
+        res.send(user)
+
+    } catch (e) {
+        res.status(400).send(e)
+    }
+})
+
+// GET route for show All Tasks
 app.get('/tasks', async (req, res) => {
 
     try {
@@ -58,7 +82,7 @@ app.get('/tasks', async (req, res) => {
     }
 })
 
-// Get route for show One Task with id params
+// GET route for show One Task with id params
 app.get('/tasks/:id', async (req, res) => {
     const _id = req.params.id
 
@@ -73,7 +97,7 @@ app.get('/tasks/:id', async (req, res) => {
     }
 })
 
-// Post route for Insert Task
+// POST route for Insert Task
 app.post('/tasks', async (req, res) => {
     const task =  new Task(req.body)
     try {
