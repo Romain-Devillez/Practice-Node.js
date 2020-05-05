@@ -54,6 +54,13 @@ const userSchema = new mongoose.Schema
         }]
     })
 
+// Related field for Mongoose
+userSchema.virtual('tasks', {
+    ref: 'Task',
+    localField: '',
+    foreignField: 'owner'
+})
+
 
 // Hide sensitive information
 // Transform in object for delete simply attribute
