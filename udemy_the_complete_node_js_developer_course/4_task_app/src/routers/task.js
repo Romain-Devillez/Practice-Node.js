@@ -19,11 +19,12 @@ router.get('/tasks/:id', auth, async (req, res) => {
     const _id = req.params.id
 
     try {
-        const task = await Task.findOne({ _id, owner: req.user._id})
+        const task = await Task.findOne({ _id, owner: req.user._id })
 
-        if(!task) {
-            return res.status(400).send()
+        if (!task) {
+            return res.status(404).send()
         }
+
         res.send(task)
     } catch (e) {
         res.status(500).send()
@@ -46,13 +47,13 @@ router.post('/tasks', auth, async (req, res) => {
 })
 
 // PATCH route for Update One Task
-router.patch('/tasks/:id', async (req, res) => {
+router.patch('/tasks/:id', auth, async (req, res) => {
     const updates = Object.keys(req.body)
-    const allowedUpdates = ['completed', 'description']
-    const isValidOperation = updates.every( (update) => allowedUpdates.includes(update))
+    const allowedUpdates = ['description', 'completed']
+    const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
 
-    if(!isValidOperation) {
-        return res.status(400).send({ error: 'Invalid updates !'})
+    if (!isValidOperation) {
+        return res.status(400).send({ error: 'Invalid updates!' })
     }
 
     try {
@@ -65,20 +66,20 @@ router.patch('/tasks/:id', async (req, res) => {
         updates.forEach((update) => task[update] = req.body[update])
         await task.save()
         res.send(task)
-
     } catch (e) {
         res.status(400).send(e)
     }
 })
 
 // DELETE route for delete One Task
-router.delete('/tasks/:id', async (req, res) => {
+router.delete('/tasks/:id', auth, async (req, res) => {
     try {
-        const task = await Task.findOneAndDelete({ _id: req.params.id, owner: req.user._id})
+        const task = await Task.findOneAndDelete({ _id: req.params.id, owner: req.user._id })
 
-        if(!task) {
-            return res.status(404).send()
+        if (!task) {
+            res.status(404).send()
         }
+
         res.send(task)
     } catch (e) {
         res.status(500).send()

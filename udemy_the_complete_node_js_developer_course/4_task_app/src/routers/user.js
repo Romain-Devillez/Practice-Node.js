@@ -3,6 +3,19 @@ const User = require('../models/user')
 const router = new express.Router()
 const auth = require("../middleware/auth")
 
+// POST route for CREATE User
+router.post('/users', async (req, res) => {
+    const user = new User(req.body)
+
+    try {
+        await user.save()
+        const token = await user.generateAuthToken()
+        res.status(201).send({user, token})
+    } catch (e) {
+        res.status(400).send(e)
+    }
+})
+
 // GET route for show profile of User
 router.get('/users/me', auth, async (req, res) => {
     res.send(req.user)
@@ -38,8 +51,11 @@ router.post('/users/login', async (req, res) => {
 // POST route for Logout
 router.post('/users/logout', auth, async (req, res) => {
     try {
-        req.user.tokens = []
+        req.user.tokens = req.user.tokens.filter((token) => {
+            return token.token !== req.token
+        })
         await req.user.save()
+
         res.send()
     } catch (e) {
         res.status(500).send()
@@ -49,47 +65,29 @@ router.post('/users/logout', auth, async (req, res) => {
 // POST route for destroy all token & logout
 router.post('/users/logoutAll', auth, async (req, res) => {
     try {
-        req.user.tokens = req.user.tokens.filter((tokens) => {
-            return tokens.token !== req.tokens
-        })
+        req.user.tokens = []
         await req.user.save()
         res.send()
     } catch (e) {
         res.status(500).send()
-
     }
 })
 
-// POST route for create One User
-router.post('/users', async (req, res) => {
-    const user = new User(req.body)
-
-    try {
-        await user.save()
-        const token = await user.generateAuthToken()
-        res.status(201).send({user, token})
-    } catch (e) {
-        res.status(400).send(e)
-    }
-})
 
 // PATCH route for updating One User
 router.patch('/users/me', auth, async (req, res) => {
     const updates = Object.keys(req.body)
-
     const allowedUpdates = ['name', 'email', 'password', 'age']
-    const isValidOperation = updates.every( (update) => allowedUpdates.includes(update))
+    const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
 
-    if(!isValidOperation) {
-        return res.status(400).send({ error: 'Invalid updates !'})
+    if (!isValidOperation) {
+        return res.status(400).send({ error: 'Invalid updates!' })
     }
 
     try {
-
         updates.forEach((update) => req.user[update] = req.body[update])
         await req.user.save()
         res.send(req.user)
-
     } catch (e) {
         res.status(400).send(e)
     }
