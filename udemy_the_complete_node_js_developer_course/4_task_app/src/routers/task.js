@@ -4,6 +4,10 @@ const router = new express.Router()
 const auth = require("../middleware/auth")
 
 // GET route for show ALL Tasks of USER
+// Find specific task marked true -> /tasks?completed=true
+// Find only 4 tasks -> /tasks?limit=4
+// Find paginated -> /tasks?skip=2
+// Find paginated 0 + only 4 tasks per page -> /tasks?limit=4&skip=0
 router.get('/tasks', auth, async (req, res) => {
     const match = {}
 
@@ -14,7 +18,11 @@ router.get('/tasks', auth, async (req, res) => {
     try {
         await req.user.populate({
             path: 'tasks',
-            match
+            match,
+            options: {
+                limit: parseInt(req.query.limit),
+                skip: parseInt(req.query.skip)
+            }
         }).execPopulate()
 
         res.send(req.user.tasks)
