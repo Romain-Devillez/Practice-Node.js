@@ -3,18 +3,27 @@ const Task = require('../models/task')
 const router = new express.Router()
 const auth = require("../middleware/auth")
 
-// GET route for show All Tasks
+// GET route for show ALL Tasks of USER
 router.get('/tasks', auth, async (req, res) => {
+    const match = {}
+
+    if(req.query.completed) {
+        match.completed = req.query.completed === 'true'
+    }
 
     try {
-        await req.user.populate('tasks').execPopulate()
+        await req.user.populate({
+            path: 'tasks',
+            match
+        }).execPopulate()
+
         res.send(req.user.tasks)
     } catch (e) {
         res.status(500).send()
     }
 })
 
-// GET route for show One Task with id params
+// GET route for SHOW ONE Task with id params
 router.get('/tasks/:id', auth, async (req, res) => {
     const _id = req.params.id
 
@@ -31,7 +40,7 @@ router.get('/tasks/:id', auth, async (req, res) => {
     }
 })
 
-// POST route for Insert Task
+// POST route for INSERT Task
 router.post('/tasks', auth, async (req, res) => {
     const task = new Task ({
         ...req.body,
@@ -46,7 +55,7 @@ router.post('/tasks', auth, async (req, res) => {
     }
 })
 
-// PATCH route for Update One Task
+// PATCH route for UPDATE One Task
 router.patch('/tasks/:id', auth, async (req, res) => {
     const updates = Object.keys(req.body)
     const allowedUpdates = ['description', 'completed']
@@ -71,7 +80,7 @@ router.patch('/tasks/:id', auth, async (req, res) => {
     }
 })
 
-// DELETE route for delete One Task
+// DELETE route for DELETE One Task
 router.delete('/tasks/:id', auth, async (req, res) => {
     try {
         const task = await Task.findOneAndDelete({ _id: req.params.id, owner: req.user._id })
