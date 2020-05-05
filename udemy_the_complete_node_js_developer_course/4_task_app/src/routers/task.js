@@ -8,11 +8,19 @@ const auth = require("../middleware/auth")
 // Find only 4 tasks -> /tasks?limit=4
 // Find paginated -> /tasks?skip=2
 // Find paginated 0 + only 4 tasks per page -> /tasks?limit=4&skip=0
+// Find By Sorted by DESC -> /tasks?sortBy:desc
+
 router.get('/tasks', auth, async (req, res) => {
     const match = {}
+    const sort = {}
 
     if(req.query.completed) {
         match.completed = req.query.completed === 'true'
+    }
+
+    if(req.query.sortBy) {
+        const parts = req.query.sortBy.split(':')
+        sort[parts[0]] = parts[1] === 'desc' ? -1 : 1
     }
 
     try {
@@ -21,7 +29,10 @@ router.get('/tasks', auth, async (req, res) => {
             match,
             options: {
                 limit: parseInt(req.query.limit),
-                skip: parseInt(req.query.skip)
+                skip: parseInt(req.query.skip),
+                sort: {
+                    completed: -1
+                }
             }
         }).execPopulate()
 
