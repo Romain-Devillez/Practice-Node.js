@@ -61,7 +61,6 @@ userSchema.virtual('tasks', {
     foreignField: 'owner'
 })
 
-
 // Hide sensitive information
 // Transform in object for delete simply attribute
 userSchema.methods.toJSON = function () {
