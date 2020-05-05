@@ -56,6 +56,7 @@ const userSchema = new mongoose.Schema
 
 
 // Hide sensitive information
+// Transform in object for delete simply attribute
 userSchema.methods.toJSON = function () {
     const user = this
     const userObject = user.toObject()
