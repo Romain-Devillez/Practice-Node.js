@@ -1,4 +1,6 @@
 const express = require('express')
+const multer = require('multer')
+
 const User = require('../models/user')
 const router = new express.Router()
 const auth = require("../middleware/auth")
@@ -93,7 +95,7 @@ router.patch('/users/me', auth, async (req, res) => {
     }
 })
 
-// DELETE route for delete One User
+// DELETE route for DELETE One User
 router.delete('/users/me', auth, async (req, res) => {
     try {
         await req.user.remove()
@@ -102,5 +104,16 @@ router.delete('/users/me', auth, async (req, res) => {
         res.status(500).send()
     }
 })
+
+// File upload
+const upload = multer({
+    dest: 'avatars'
+})
+
+// POST route for UPLOAD avatar to USER
+router.post('users/me/avatar', upload.single('avatar'), (req, res) => {
+    res.send()
+})
+
 
 module.exports = router
