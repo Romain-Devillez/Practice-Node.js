@@ -105,13 +105,23 @@ router.delete('/users/me', auth, async (req, res) => {
     }
 })
 
-// File upload
+// File upload constraint
 const upload = multer({
-    dest: 'avatars'
+    dest: 'avatars',
+    limits: {
+        fileSize: 1000000
+    },
+    fileFilter(req, file, cb) {
+        if(!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+            return cb(new Error('Please upload an image'))
+        }
+
+        cb(undefined, true)
+    }
 })
 
 // POST route for UPLOAD avatar to USER
-router.post('users/me/avatar', upload.single('avatar'), (req, res) => {
+router.post('/users/me/avatar', upload.single('avatar'), (req, res) => {
     res.send()
 })
 
