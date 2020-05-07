@@ -1,5 +1,6 @@
 const express = require('express')
 const multer = require('multer')
+const sharp = require("sharp")
 
 const User = require('../models/user')
 const router = new express.Router()
@@ -121,9 +122,11 @@ const upload = multer({
 
 // POST route for UPLOAD avatar to USER
 router.post('/users/me/avatar', auth, upload.single('avatar'), async (req, res) => {
+    const buffer = await sharp(req.file.buffer).resize({ width: 250, height: 250 }).png().toBuffer()
     req.user.avatar = req.file.buffer
     await req.user.save()
     res.send()
+
     // Define express error
 }, (error, req, res, next) => {
     res.status(400).send({ error: error.message})
@@ -145,7 +148,7 @@ router.get('/users/:id/avatar', async (req, res) => {
             throw new Error('Not found user or Avatar')
         }
 
-        res.set('Content-Type', 'image/jpg')
+        res.set('Content-Type', 'image/png')
         res.send(user.avatar)
 
     } catch (e) {
