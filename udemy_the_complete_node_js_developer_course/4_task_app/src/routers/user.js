@@ -123,6 +123,9 @@ const upload = multer({
 // POST route for UPLOAD avatar to USER
 router.post('/users/me/avatar', upload.single('avatar'), (req, res) => {
     res.send()
+    // Define express error
+}, (error, req, res, next) => {
+    res.status(400).send({ error: error.message})
 })
 
 
